@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agri Pi - المنصة الزراعية الذكية</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        agroGreen: '#16a34a',
+                        agroDark: '#14532d',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800">
+
+    <!-- Header & Language Selector -->
+    <header class="bg-agroDark text-white shadow-md">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3 space-x-reverse">
+                <span class="text-2xl">🌱</span>
+                <h1 id="app-title" class="text-xl font-bold">Agri Pi - الزراعة الذكية</h1>
+            </div>
+            <div>
+                <select id="langSelect" onchange="changeLanguage(this.value)" class="bg-agroGreen text-white text-sm px-3 py-1.5 rounded-lg border border-green-600 focus:outline-none">
+                    <option value="ar">العربية</option>
+                    <option value="fr">Français</option>
+                    <option value="en">English</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-4xl mx-auto px-4 py-6 space-y-6">
+
+        <!-- Section 1: Fertilizer & Growth Regulator Calculator -->
+        <section class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+            <h2 id="calc-heading" class="text-lg font-bold text-agroDark mb-4 flex items-center gap-2">
+                <span>💧</span> حاسبة الجرعات والأسمدة الزراعية
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label id="lbl-water" class="block text-sm font-medium text-slate-600 mb-1">كمية الماء (لتر):</label>
+                    <input type="number" id="waterAmount" value="20" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-agroGreen focus:outline-none">
+                </div>
+                <div>
+                    <label id="lbl-product" class="block text-sm font-medium text-slate-600 mb-1">اختر المادة / المنظم:</label>
+                    <select id="productType" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-agroGreen focus:outline-none">
+                        <option value="giberkey">منظم نمو (GİBERKEY - قرص)</option>
+                        <option value="berelex">بريليكس (Berelex)</option>
+                    </select>
+                </div>
+            </div>
+            <button onclick="calculateDose()" id="btn-calc" class="mt-4 w-full bg-agroGreen hover:bg-agroDark text-white font-medium py-2.5 rounded-xl transition-all">
+                حساب الجرعة بدقة
+            </button>
+            <div id="calcResult" class="mt-4 p-3 bg-green-50 text-agroDark rounded-xl text-sm hidden"></div>
+        </section>
+
+        <!-- Section 2: Orchard Management (Fig/Olive Tracker) -->
+        <section class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+            <h2 id="orchard-heading" class="text-lg font-bold text-agroDark mb-4 flex items-center gap-2">
+                <span>🌳</span> متابعة الأشجار والمحصول
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <p id="stat-trees" class="text-xs text-slate-500">عدد الأشجار المتابعة</p>
+                    <p class="text-2xl font-bold text-agroDark mt-1">20</p>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <p id="stat-type" class="text-xs text-slate-500">نوع الصنف الرئيسي</p>
+                    <p id="crop-name-val" class="text-lg font-bold text-agroDark mt-1">أشجار التين</p>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <p id="stat-status" class="text-xs text-slate-500">حالة الري الموسمية</p>
+                    <p id="status-val" class="text-sm font-bold text-green-600 mt-2">منتظم ومستقر</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Quick Pests & Crop AI Diagnosis Guide -->
+        <section class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+            <h2 id="ai-diag-heading" class="text-lg font-bold text-agroDark mb-4 flex items-center gap-2">
+                <span>🔍</span> التشخيص الزراعي السريع
+            </h2>
+            <p id="ai-desc" class="text-sm text-slate-600 mb-3">اختر المشكلة للتعرف على الحلول الوقائية والعلاجية:</p>
+            <div class="space-y-2">
+                <select id="pestSelect" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-agroGreen focus:outline-none">
+                    <option value="fungus" id="opt-1">اصفرار الأوراق ومشاكل الرطوبة</option>
+                    <option value="insects" id="opt-2">الآفات الحشرية والوقاية منها</option>
+                </select>
+                <button onclick="showAdvice()" id="btn-advice" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-medium py-2.5 rounded-xl transition-all">
+                    الحصول على الإرشادات الفلاحية
+                </button>
+            </div>
+            <div id="adviceResult" class="mt-4 p-3 bg-slate-50 text-slate-700 rounded-xl text-sm hidden"></div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-6 text-xs text-slate-400">
+        Agri Pi Ecosystem App &bull; Powered by Pi Network & Replit
+    </footer>
+
+    <!-- Multilingual JavaScript Controller -->
+    <script>
+        const translations = {
+            ar: {
+                appTitle: "Agri Pi - الزراعة الذكية",
+                calcHeading: "💧 حاسبة الجرعات والأسمدة الزراعية",
+                lblWater: "كمية الماء (لتر):",
+                lblProduct: "اختر المادة / المنظم:",
+                btnCalc: "حساب الجرعة بدقة",
+                orchardHeading: "🌳 متابعة الأشجار والمحصول",
+                statTrees: "عدد الأشجار المتابعة",
+                cropNameVal: "أشجار التين",
+                statType: "نوع الصنف الرئيسي",
+                statStatus: "حالة الري الموسمية",
+                statusVal: "منتظم ومستقر",
+                aiDiagHeading: "🔍 التشخيص الزراعي السريع",
+                aiDesc: "اختر المشكلة للتعرف على الحلول الوقائية والعلاجية:",
+                opt1: "اصفرار الأوراق ومشاكل الرطوبة",
+                opt2: "الآفات الحشرية والوقاية منها",
+                btnAdvice: "الحصول على الإرشادات الفلاحية",
+                resultCalc: (water) => `الجرعة الموصى بها لـ ${water} لتر: بناءً على إرشادات المزود الفلاحي (ربع قرص لكل 20 لتر)، ستحتاج إلى ${(water / 80).toFixed(2)} قرص من منظم النمو لتجنب أي زيادة ضارة.`,
+                adviceFungus: "تأكد من تنظيم الري وتفادي غدق التربة بالماء الزائد، ويُفضل إضافة مغذيات تحتوي على الورقيات والحديد عند ظهور علامات الشحوب.",
+                adviceInsects: "يُوصى بالمتابعة الميدانية الدورية واستخدام المبيدات البيئية الآمنة في الصباح الباكر أو عند غروب الشمس."
+            },
+            fr: {
+                appTitle: "Agri Pi - Agriculture Intelligente",
+                calcHeading: "💧 Calculateur de Doses et Engrais",
+                lblWater: "Quantité d'eau (Litres):",
+                lblProduct: "Sélectionner le produit:",
+                btnCalc: "Calculer la dose exacte",
+                orchardHeading: "🌳 Suivi du Verger",
+                statTrees: "Arbres suivis",
+                cropNameVal: "Figuiers",
+                statType: "Culture principale",
+                statStatus: "État de l'irrigation",
+                statusVal: "Régulier et stable",
+                aiDiagHeading: "🔍 Diagnostic Agricole Rapide",
+                aiDesc: "Sélectionnez un problème pour voir les solutions:",
+                opt1: "Jaunissement des feuilles et humidité",
+                opt2: "Ravageurs et protection des cultures",
+                btnAdvice: "Obtenir des conseils agronomiques",
+                resultCalc: (water) => `Dosage recommandé pour ${water}L : Selon les recommandations du fournisseur (1/4 de comprimé pour 20L), vous avez besoin de ${(water / 80).toFixed(2)} comprimé(s).`,
+                adviceFungus: "Assurez-vous de réguler l'irrigation et d'éviter l'engorgement du sol. Appliquez des oligo-éléments si nécessaire.",
+                adviceInsects: "Surveillez régulièrement le verger et privilégiez les traitements écologiques tôt le matin ou au coucher du soleil."
+            },
+            en: {
+                appTitle: "Agri Pi - Smart Farming",
+                calcHeading: "💧 Fertilizer & Growth Regulator Calculator",
+                lblWater: "Water Quantity (Liters):",
+                lblProduct: "Select Product / Regulator:",
+                btnCalc: "Calculate Exact Dose",
+                orchardHeading: "🌳 Orchard & Crop Management",
+                statTrees: "Tracked Trees",
+                cropNameVal: "Fig Trees",
+                statType: "Main Crop Type",
+                statStatus: "Irrigation Status",
+                statusVal: "Regular & Stable",
+                aiDiagHeading: "🔍 Quick Agricultural Diagnosis",
+                aiDesc: "Select an issue to view preventive and treatment solutions:",
+                opt1: "Leaf yellowing & moisture issues",
+                opt2: "Insect pests and prevention",
+                btnAdvice: "Get Agricultural Advice",
+                resultCalc: (water) => `Recommended dose for ${water}L: Based on agricultural supplier advice (1/4 tablet per 20L), you need ${(water / 80).toFixed(2)} tablets.`,
+                adviceFungus: "Ensure proper irrigation management and avoid waterlogging. Consider micronutrient sprays if chlorosis appears.",
+                adviceInsects: "Regular field scouting is recommended; apply safe organic treatments early in the morning or at sunset."
+            }
+        };
+
+        let currentLang = 'ar';
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            const t = translations[lang];
+            
+            // Direction handling
+            document.documentElement.lang = lang;
+            document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+
+            // Update texts
+            document.getElementById('app-title').innerText = t.appTitle;
+            document.getElementById('calc-heading').innerText = t.calcHeading;
+            document.getElementById('lbl-water').innerText = t.lblWater;
+            document.getElementById('lbl-product').innerText = t.lblProduct;
+            document.getElementById('btn-calc').innerText = t.btnCalc;
+            document.getElementById('orchard-heading').innerText = t.orchardHeading;
+            document.getElementById('stat-trees').innerText = t.statTrees;
+            document.getElementById('crop-name-val').innerText = t.cropNameVal;
+            document.getElementById('stat-type').innerText = t.statType;
+            document.getElementById('stat-status').innerText = t.statStatus;
+            document.getElementById('status-val').innerText = t.statusVal;
+            document.getElementById('ai-diag-heading').innerText = t.aiDiagHeading;
+            document.getElementById('ai-desc').innerText = t.aiDesc;
+            document.getElementById('opt-1').innerText = t.opt1;
+            document.getElementById('opt-2').innerText = t.opt2;
+            document.getElementById('btn-advice').innerText = t.btnAdvice;
+
+            // Reset results display if active
+            document.getElementById('calcResult').classList.add('hidden');
+            document.getElementById('adviceResult').classList.add('hidden');
+        }
+
+        function calculateDose() {
+            const water = parseFloat(document.getElementById('waterAmount').value) || 0;
+            const resDiv = document.getElementById('calcResult');
+            const t = translations[currentLang];
+
+            if (water <= 0) {
+                resDiv.innerText = (currentLang === 'ar') ? "الرجاء إدخال كمية صحيحة للماء." : (currentLang === 'fr') ? "Veuillez entrer une quantité d'eau valide." : "Please enter a valid water quantity.";
+            } else {
+                resDiv.innerText = t.resultCalc(water);
+            }
+            resDiv.classList.remove('hidden');
+        }
+
+        function showAdvice() {
+            const pest = document.getElementById('pestSelect').value;
+            const advDiv = document.getElementById('adviceResult');
+            const t = translations[currentLang];
+
+            if (pest === 'fungus') {
+                advDiv.innerText = t.adviceFungus;
+            } else {
+                advDiv.innerText = t.adviceInsects;
+            }
+            advDiv.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
